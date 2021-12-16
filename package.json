@@ -7,5 +7,11 @@
     "test": "npx cypress open"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^9.1.1"
+  },
+  "dependencies": {
+    "faker": "^5.5.3"
+  }
 }

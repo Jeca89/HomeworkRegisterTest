@@ -1,0 +1,21 @@
+{
+    "Header": {
+        "LoginButton": "a[href='/login']",
+        "RegisterButton" : "a[href='/register']",
+        "LogoutButton" : ".nav-link"
+    },
+    "LoginPage": {
+        "EmailInput": "#email",
+        "PasswordInput": "#password",
+        "SubmitButton": "button[type='submit']"
+    },
+    "RegisterPage": {
+        "FirstName": "#first-name",
+        "LastName": "#last-name",
+        "RegistrationEmail": "#email",
+        "RegistrationPass": "#password",
+        "PassConfirm": "#password-confirmation",
+        "TermsButton": "input[class='form-check-input']",
+        "RegistrationButton": "button[type='submit']"
+    }
+}
