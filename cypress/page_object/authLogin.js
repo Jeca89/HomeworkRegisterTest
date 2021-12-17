@@ -16,9 +16,9 @@ class AuthLogin {
     }
 
     login(email, pass) {
-    this.emailInput.clear().type(email);
-    this.passwordInput.clear().type(pass);
-    this.submitBtn.click();
+        this.emailInput.clear().type(email);
+        this.passwordInput.clear().type(pass);
+        this.submitBtn.click();
     }
 }
 

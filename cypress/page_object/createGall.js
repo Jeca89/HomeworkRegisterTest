@@ -1,4 +1,4 @@
-class CreateGall {
+class CreateGallery {
     get titleInput() {
         return cy.get("#title");
     }
@@ -24,13 +24,13 @@ class CreateGall {
     }
 
     create(title, description, img) {
-    this.titleInput.clear().type(title);
-    this.descriptionInput.clear().type(description);
-    this.imagesInput.clear().type(img)
-    this.addImgBtn.click();
-    this.addImgBtn.click();
-    this.submitCreateBtn.click();
+        this.titleInput.clear().type(title);
+        this.descriptionInput.clear().type(description);
+        this.imagesInput.clear().type(img)
+        this.addImgBtn.click();
+        this.addImgBtn.click();
+        this.submitCreateBtn.click();
     }
-}
+};
 
-export const createGall = new CreateGall();
+export const createGall = new CreateGallery();

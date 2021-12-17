@@ -42,4 +42,3 @@ describe("Login test", () => {
         cy.get(Locators.Header.LogoutButton).eq(3).click(0);
     });
 });
-

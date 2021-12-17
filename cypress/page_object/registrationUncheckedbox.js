@@ -1,4 +1,4 @@
-class RegistrationPage {
+class RegistrationCheckBox {
     get firstName() {
         return cy.get("#first-name");
     }
@@ -27,15 +27,14 @@ class RegistrationPage {
         return cy.get("button[type='submit']");
     }
 
-    registration(name, lastName, email, pass) {
+    registrationUncheckedBox(name, lastName, email, pass) {
         this.firstName.clear().type(name);
         this.lastName.clear().type(lastName);
         this.registrationEmail.clear().type(email)
         this.registrationPass.clear().type(pass);
         this.confirmPass.clear().type(pass);
-        this.termsBox.check();
         this.registrationBtn.click();
     }
 }
 
-export const registrationPage = new RegistrationPage();
+export const registrationCheckBox = new RegistrationCheckBox();

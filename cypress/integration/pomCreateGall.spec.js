@@ -12,16 +12,16 @@ describe('POM Create Gallery', () => {
 
     let userData = {
         randomTitle: faker.name.title(),
+        shortTitle: faker.datatype.string(1),
+        longTitle: faker.lorem.words(80),
         randomDescription: faker.datatype.string(),
+        randomLongDescription: faker.lorem.sentence(50),
         randomImg: faker.image.imageUrl()
     };
 
-    before('visit app', () => {
+    before('visit app and login', () => {
         cy.visit('/');
-        cy.url().should('contains', 'gallery-app')
-    });
-
-    before('Login wiht valid credentials', () => {
+        cy.url().should('contains', 'gallery-app');
         header.loginBtn.click();
         cy.url().should('contains', '/login');
 
@@ -30,12 +30,66 @@ describe('POM Create Gallery', () => {
         cy.url().should('not.contains', "/login")
     });
 
-    it('Create gallery', () => {
+    it.only('Create gallery with title field empty', () => {
+        header.createBtn.click();
+        cy.url().should('contains', '/create');
+
+        createGall.create(('{selectall}{backspace}'), userData.randomDescription, userData.randomImg);
+        cy.wait(1000);
+        cy.url().should('contains', '/create')
+    });
+
+    it.only('Create gallery title field less than 2 chars', () => {
+        header.createBtn.click();
+        cy.url().should('contains', '/create');
+
+        createGall.create(userData.shortTitle, userData.randomDescription, userData.randomImg);
+        cy.wait(1000);
+        cy.url().should('contains', '/create')
+    });
+
+    it.only('Create gallery title field more than 255 chars', () => {
+        header.createBtn.click();
+        cy.url().should('contains', '/create');
+
+        createGall.create(userData.longTitle, userData.randomDescription, userData.randomImg);
+        cy.wait(1000);
+        cy.url().should('contains', '/create')
+    });
+
+    it.only('Create gallery with description field empty', () => {
+        header.createBtn.click();
+        cy.url().should('contains', '/create');
+
+        createGall.create(userData.randomTitle, ('{selectall}{backspace}'), userData.randomImg);
+        cy.wait(1000);
+        cy.url().should('contains', '/create')
+    });
+
+    it.only('Create gallery with description field more than 1000 chars', () => {
+        header.createBtn.click();
+        cy.url().should('contains', '/create');
+
+        createGall.create(userData.randomTitle, userData.randomLongDescription, userData.randomImg);
+        cy.wait(1000);
+        cy.url().should('contains', '/create')
+    });
+
+    it.only('Create gallery with img field empty', () => {
+        header.createBtn.click();
+        cy.url().should('contains', '/create');
+
+        createGall.create(userData.randomTitle, userData.randomDescription, ('{selectall}{backspace}'));
+        cy.wait(1000);
+        cy.url().should('contains', '/create')
+    });
+
+    it.only('Create gallery', () => {
         header.createBtn.click();
         cy.url().should('contains', '/create');
 
         createGall.create(userData.randomTitle, userData.randomDescription, userData.randomImg);
-        cy.wait(1000);
+        cy.wait(10000);
         cy.url().should('not.contains', '/create')
-    })
+    });
 });
