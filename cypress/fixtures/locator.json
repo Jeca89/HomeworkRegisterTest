@@ -2,7 +2,8 @@
     "Header": {
         "LoginButton": "a[href='/login']",
         "RegisterButton" : "a[href='/register']",
-        "LogoutButton" : ".nav-link"
+        "LogoutButton" : ".nav-link",
+        "CreateGalleryBtn": "a[href='/create']"
     },
     "LoginPage": {
         "EmailInput": "#email",
@@ -17,5 +18,13 @@
         "PassConfirm": "#password-confirmation",
         "TermsButton": "input[class='form-check-input']",
         "RegistrationButton": "button[type='submit']"
+    },
+    "CreateGalleryPage": {
+        "Title": "#title",
+        "Description": "#description",
+        "Images": "input[type='url']",
+        "AddImgBtn": "button[type='button']",
+        "SubmitGallBtn": ".btn",
+        "CancelAddImg": ".btn"
     }
 }
