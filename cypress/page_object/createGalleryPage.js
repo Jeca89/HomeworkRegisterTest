@@ -23,6 +23,10 @@ class CreateGallery {
         return cy.get(".btn").eq(1);
     }
 
+    get errorMsgCreate() {
+        return cy.get('.alert');
+    }
+
     create(title, description, img) {
         this.titleInput.clear().type(title);
         this.descriptionInput.clear().type(description);

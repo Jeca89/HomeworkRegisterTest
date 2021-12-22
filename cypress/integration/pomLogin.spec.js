@@ -2,6 +2,7 @@
 
 import { authLogin} from '../page_object/authLogin';
 import { header} from '../page_object/header';
+import {validationMessages} from '../fixtures/validationMessages.json';
 const faker = require("faker");
 
 describe('POM login', () => {
@@ -20,60 +21,118 @@ describe('POM login', () => {
         cy.url().should('contains', 'gallery-app')
     });
 
-    it.only('Login with invalid credentials', () => {
+    it('Login with invalid credentials', () => {
         header.loginBtn.click();
-        authLogin.login(userData.randomEmail, userData.randomPassword)
+        authLogin.loginPageHeading.should('be.visible');
+
+        cy.contains('Please login');
+
+        authLogin.login(userData.randomEmail, userData.randomPassword);
+
+        authLogin.errorMsg.should('be.visible');
+        authLogin.errorMsg.should('have.text', validationMessages.badCred);
+        authLogin.errorMsg.should('have.css', 'background-color', 'rgb(248, 215, 218)');
+        header.loginBtn.should('exist');
+        cy.url().should('contains', '/login');
+    });
+
+    it('Login with invalid email and valid password', () => {
+        header.loginBtn.click();
+        authLogin.loginPageHeading.should('be.visible');
+        cy.contains('Please login');
+
+        authLogin.login(userData.randomEmail, validPassword);
+
+        authLogin.errorMsg.should('be.visible');
+        authLogin.errorMsg.should('have.text', validationMessages.badCred);
+        authLogin.errorMsg.should('have.css', 'background-color', 'rgb(248, 215, 218)');
+        header.loginBtn.should('exist');
         cy.url().should('contains', '/login')
     });
 
-    it.only('Login with invalid email and valid password', () => {
+    it('Login with valid email and invalid password', () => {
         header.loginBtn.click();
-        authLogin.login(userData.randomEmail, validPassword)
+        authLogin.loginPageHeading.should('be.visible');
+        cy.contains('Please login');
+
+        authLogin.login(validEmail, userData.randomPassword);
+
+        authLogin.errorMsg.should('be.visible');
+        authLogin.errorMsg.should('have.text', validationMessages.badCred);
+        authLogin.errorMsg.should('have.css', 'background-color', 'rgb(248, 215, 218)');
+        header.loginBtn.should('exist');
         cy.url().should('contains', '/login')
     });
 
-    it.only('Login with valid email and invalid password', () => {
+    it('Login with emaily field empty', () => {
         header.loginBtn.click();
-        authLogin.login(validEmail, userData.randomPassword)
+        authLogin.loginPageHeading.should('be.visible');
+        cy.contains('Please login');
+
+        authLogin.login(('{selectall}{backspace}'), userData.randomPassword);
+
+        authLogin.emailInput.should('contain', '');
+        header.loginBtn.should('exist');
         cy.url().should('contains', '/login')
     });
 
-    it.only('Login with emaily field empty', () => {
+    it('Login with password field empty valid email', () => {
         header.loginBtn.click();
-        authLogin.login(('{selectall}{backspace}'), userData.randomPassword)
-        cy.url().should('contains', '/login')
-    });
+        authLogin.loginPageHeading.should('be.visible');
+        cy.contains('Please login');
 
-    it.only('Login with password field empty valid email', () => {
-        header.loginBtn.click();
         authLogin.login(validEmail,('{selectall}{backspace}'));
+
+        authLogin.passwordInput.should('contain', '');
+        header.loginBtn.should('exist');
         cy.url().should('contains', '/login')
     });
 
-    it.only('Login with password field empty invalid email', () => {
+    it('Login with password field empty invalid email', () => {
         header.loginBtn.click();
+        authLogin.loginPageHeading.should('be.visible');
+        cy.contains('Please login');
+
         authLogin.login(userData.randomEmail,('{selectall}{backspace}'));
+        authLogin.passwordInput.should('contain', '');
+        header.loginBtn.should('exist');
         cy.url().should('contains', '/login')
     });
 
-    it.only('Login with space on email', () => {
+    it('Login with space on email', () => {
         header.loginBtn.click();
+        authLogin.loginPageHeading.should('be.visible');
+        cy.contains('Please login');
+
         authLogin.login(userData.randomEmail + " ",('{selectall}{backspace}'));
+
+        authLogin.passwordInput.should('contain', '');
+        header.loginBtn.should('exist')
         cy.url().should('contains', '/login')
     });
 
-    it.only('Login wiht all field empty', () => {
+    it('Login wiht all field empty', () => {
         header.loginBtn.click();
+        authLogin.loginPageHeading.should('be.visible');
+        cy.contains('Please login');
+
         authLogin.login(('{selectall}{backspace}'),('{selectall}{backspace}'));
+
+        authLogin.emailInput.should('contain', '');
+        authLogin.passwordInput.should('contain', '');
+        header.loginBtn.should('exist');
         cy.url().should('contains', '/login')
     });
 
     it('Login wiht valid credentials', () => {
         header.loginBtn.click();
+        authLogin.loginPageHeading.should('be.visible')
         cy.url().should('contains', '/login');
 
         authLogin.login(validEmail, validPassword);
         cy.wait(10000);
+        header.loginBtn.should('not.exist');
+        header.logoutBtn.should('exist')
         cy.url().should('not.contains', "/login")
     });
 

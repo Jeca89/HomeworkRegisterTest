@@ -1,0 +1,13 @@
+{
+    "validationMessages": {
+        "badCred": "Bad credentials",
+        "confMismatch": "The password confirmation does not match.",
+        "emailTaken": "The email has already been taken.",
+        "shortPass": "The password must be at least 8 characters.",
+        "invalidEmail": "The email must be a valid email address.",
+        "termsAndCond": "The terms and conditions must be accepted.",
+        "shortTitle": "The title must be at least 2 characters.",
+        "longTitle": "The title may not be greater than 255 characters.",
+        "longDescription": "The description may not be greater than 1000 characters."
+    }
+}

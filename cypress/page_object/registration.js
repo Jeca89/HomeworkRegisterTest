@@ -27,13 +27,25 @@ class RegistrationPage {
         return cy.get("button[type='submit']");
     }
 
-    registration(name, lastName, email, pass) {
+    get regErrorMsg() {
+        return cy.get('.alert');
+    }
+
+    registration(name, lastName, email, pass, passConf) {
+        this.firstName.clear().type(name);
+        this.lastName.clear().type(lastName);
+        this.registrationEmail.clear().type(email)
+        this.registrationPass.clear().type(pass);
+        this.confirmPass.clear().type(passConf);
+        this.termsBox.check();
+        this.registrationBtn.click();
+    }
+    registrationUncheckedBox(name, lastName, email, pass) {
         this.firstName.clear().type(name);
         this.lastName.clear().type(lastName);
         this.registrationEmail.clear().type(email)
         this.registrationPass.clear().type(pass);
         this.confirmPass.clear().type(pass);
-        this.termsBox.check();
         this.registrationBtn.click();
     }
 }

@@ -14,6 +14,9 @@ class Header {
     get createBtn() {
         return cy.get("a[href='/create']")
     }
+    get allGalleries() {
+        return cy.get("a[href='/']")
+    }
 }
 
 export const header = new Header();
