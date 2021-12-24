@@ -124,13 +124,22 @@ describe('POM login', () => {
         cy.url().should('contains', '/login')
     });
 
-    it('Login wiht valid credentials', () => {
+    it.only('Login with valid credentials', () => {
+
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/auth/login'
+        }).as('login');
         header.loginBtn.click();
         authLogin.loginPageHeading.should('be.visible')
         cy.url().should('contains', '/login');
 
         authLogin.login(validEmail, validPassword);
-        cy.wait(10000);
+        cy.wait('@login').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(200);
+        });
+
         header.loginBtn.should('not.exist');
         header.logoutBtn.should('exist')
         cy.url().should('not.contains', "/login")

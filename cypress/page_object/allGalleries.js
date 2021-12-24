@@ -1,7 +1,7 @@
 class AllGalleries {
 
     get galleryCard() {
-        return cy.get('.cell');
+        return cy.get('.cell').eq(1);
     }
     get inputSearch() {
         return cy.get("input[type='text']")

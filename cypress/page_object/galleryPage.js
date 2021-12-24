@@ -7,11 +7,11 @@ class GalleryPage {
         return cy.get('button').contains('Load more');
     }
 
-    get galleryHeading(index) {
+    getGalleryHeading(index) {
         return this.galleryCard.eq(index).find('h2');
     }
 
-    get galleryAuthor(index) {
+    getGalleryAuthor(index) {
         return this.galleryCard.eq(index).find('p')
     }
 }

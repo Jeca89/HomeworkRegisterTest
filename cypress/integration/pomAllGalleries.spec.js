@@ -21,7 +21,7 @@ describe('POM All galeries home page', () => {
         cy.visit('/');
         cy.url().should('contains', 'gallery-app');
 
-        header.allGalleries.eq(1).click();
+        header.allGalleries.click();
 
         allGalleries.galleryCard.should('have.length', 10);
     })

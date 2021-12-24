@@ -1,3 +1,7 @@
 {
-    "baseUrl":"https://gallery-app.vivifyideas.com"
+    "baseUrl":"https://gallery-app.vivifyideas.com",
+    "env": {
+        "validUserMail": "jeca_ceca89@hotmail.com",
+        "validUserPass": "brankopetra1518"
+    }
 }
