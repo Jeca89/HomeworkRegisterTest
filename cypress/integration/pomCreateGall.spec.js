@@ -3,6 +3,7 @@
 import { authLogin} from '../page_object/authLogin';
 import { header} from '../page_object/header';
 import { createGall} from '../page_object/createGalleryPage';
+import { specificGallery } from '../page_object/galleryCard';
 
 import {validationMessages} from '../fixtures/validationMessages.json';
 
@@ -13,6 +14,7 @@ describe('POM Create Gallery', () => {
     let galleryId = '';
     let galleryComment = 'jako lepa galerija';
     let authToken = window.localStorage.getItem('token');
+    let commentId = '';
 
     let validEmail = 'jeca_ceca89@hotmail.com';
     let validPassword = 'brankopetra1518';
@@ -31,34 +33,56 @@ describe('POM Create Gallery', () => {
     beforeEach('visit app and login', () => {
         cy.visit('/');
         cy.url().should('contains', 'gallery-app');
+      
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/auth/login'
+        }).as('login');
         header.loginBtn.click();
-        authLogin.loginPageHeading.should('be.visible');
-
-        cy.contains('Please login');
+        authLogin.loginPageHeading.should('be.visible')
         cy.url().should('contains', '/login');
 
         authLogin.login(validEmail, validPassword);
-        cy.wait(5000);
+        cy.wait('@login').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(200);
+        });
+
+        header.loginBtn.should('not.exist');
+        header.logoutBtn.should('exist')
         cy.url().should('not.contains', "/login")
-        header.logoutBtn.should('exist');
+        //header.loginBtn.should('not.exist')
+        //header.logoutBtn.should('exist');
     });
 
     it('Create gallery with title field empty', () => {
         header.createBtn.click();
         cy.url().should('contains', '/create');
-
+        
         createGall.create(('{selectall}{backspace}'), userData.randomDescription, userData.randomImg);
-
-        createGall.titleInput.should(have.value, '');
+        
+        createGall.titleInput.should('contain', '')
+        
         cy.wait(1000);
-        cy.url().should('contains', '/create')
+        cy.url().should('include', '/create')
     });
 
     it('Create gallery title field less than 2 chars', () => {
+
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/galleries'
+        }).as('createGallery');
+
         header.createBtn.click();
         cy.url().should('contains', '/create');
 
         createGall.create(userData.shortTitle, userData.randomDescription, userData.randomImg2);
+
+        cy.wait('@createGallery').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(422);
+        });
         createGall.errorMsgCreate.should('be.visible');
         createGall.errorMsgCreate.should('have.text', validationMessages.shortTitle);
         createGall.errorMsgCreate.should('have.css', 'background-color', 'rgb(248, 215, 218)');
@@ -68,10 +92,21 @@ describe('POM Create Gallery', () => {
     });
 
     it('Create gallery title field more than 255 chars', () => {
+
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/galleries'
+        }).as('createGallery');
+
         header.createBtn.click();
         cy.url().should('contains', '/create');
 
         createGall.create(userData.longTitle, userData.randomDescription, userData.randomImg2);
+
+        cy.wait('@createGallery').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(422);
+        });
 
         createGall.errorMsgCreate.should('be.visible');
         createGall.errorMsgCreate.should('have.text', validationMessages.longTitle);
@@ -90,10 +125,21 @@ describe('POM Create Gallery', () => {
     });
 
     it('Create gallery with description field more than 1000 chars', () => {
+
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/galleries'
+        }).as('createGallery');
+
         header.createBtn.click();
         cy.url().should('contains', '/create');
 
         createGall.create(userData.randomTitle, userData.randomLongDescription, userData.randomImg2);
+
+        cy.wait('@createGallery').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(422);
+        });
 
         createGall.errorMsgCreate.should('be.visible');
         createGall.errorMsgCreate.should('have.text', validationMessages.longDescription);
@@ -133,7 +179,8 @@ describe('POM Create Gallery', () => {
         //cy.url(`/galleries/${galleryId}`);
 
         cy.visit(`/galleries/` + galleryId);
-        cy.get('button').contains('Delete').click();
+        specificGallery.deleteBtn.click();
+        //cy.get('button').contains('Delete').click();
     });
 
     it('visit specific gallery and comment it', () => {
@@ -146,16 +193,45 @@ describe('POM Create Gallery', () => {
 
         cy.visit(`/galleries/` + galleryId);
         cy.get('textarea').type('jako lepa galerija');
-        cy.get('button').contains('Submit').click();
+        specificGallery.submitComment.click();
+        //cy.get('button').contains('Submit').click();
 
         cy.wait("@commentGallery").then((interception) => {
             console.log(interception.response);
             expect(interception.response.statusCode).eq(200);
             expect(interception.response.body[0].body).to.have.string(galleryComment);
+            commentId = interception.response.body[0].id;
+            console.log(commentId)
         });
 
     });
-    it.only('create gallery from backend', () => {
+
+    it('visit specific gallery and delete a comment', () => {
+
+        cy.visit(`/galleries/` + galleryId);
+        specificGallery.deleteComment.click();
+        //cy.get('.fas').click();
+
+    });
+
+    it.only('visit specific gallery and edit', () => {
+
+        cy.intercept({
+            method: "PUT",
+            url: "https://gallery-api.vivifyideas.com/api/galleries"
+        }).as("editGallery");
+
+        cy.visit(`/galleries/` + galleryId);
+        specificGallery.editBtn.click();
+        createGall.descriptionInput.type('dodatni tekst');
+        createGall.submitCreateBtn.click();
+
+        cy.wait("@editGallery").then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(200);
+        });
+    })
+    it('create gallery from backend', () => {
         cy.request({
             method: "POST",
             url: "https://gallery-api.vivifyideas.com/api/galleries",

@@ -22,12 +22,22 @@ describe('POM login', () => {
     });
 
     it('Login with invalid credentials', () => {
+
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/auth/login'
+        }).as('login');
         header.loginBtn.click();
         authLogin.loginPageHeading.should('be.visible');
 
         cy.contains('Please login');
 
         authLogin.login(userData.randomEmail, userData.randomPassword);
+
+        cy.wait('@login').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(401);
+        });
 
         authLogin.errorMsg.should('be.visible');
         authLogin.errorMsg.should('have.text', validationMessages.badCred);
@@ -37,11 +47,21 @@ describe('POM login', () => {
     });
 
     it('Login with invalid email and valid password', () => {
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/auth/login'
+        }).as('login');
+
         header.loginBtn.click();
         authLogin.loginPageHeading.should('be.visible');
         cy.contains('Please login');
 
         authLogin.login(userData.randomEmail, validPassword);
+
+        cy.wait('@login').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(401);
+        });
 
         authLogin.errorMsg.should('be.visible');
         authLogin.errorMsg.should('have.text', validationMessages.badCred);
@@ -50,12 +70,23 @@ describe('POM login', () => {
         cy.url().should('contains', '/login')
     });
 
-    it('Login with valid email and invalid password', () => {
+    it.only('Login with valid email and invalid password', () => {
+
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/auth/login'
+        }).as('login');
+
         header.loginBtn.click();
         authLogin.loginPageHeading.should('be.visible');
         cy.contains('Please login');
 
         authLogin.login(validEmail, userData.randomPassword);
+
+        cy.wait('@login').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(401);
+        });
 
         authLogin.errorMsg.should('be.visible');
         authLogin.errorMsg.should('have.text', validationMessages.badCred);

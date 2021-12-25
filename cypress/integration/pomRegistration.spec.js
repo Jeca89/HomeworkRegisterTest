@@ -24,8 +24,19 @@ describe("POM Registration test", () =>{
 
     it("Register with checkbox unchecked", () => {
 
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/auth/register'
+        }).as('register');
+
         header.registerBtn.click();
         registrationPage.registrationUncheckedBox(userData.randomName, userData.randomLastName, userData.randomEmail, userData.randomPassword, userData.randomPassword);
+
+        cy.wait('@register').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(422);
+        });
+
         registrationPage.regErrorMsg.should('be.visible');
         registrationPage.regErrorMsg.should('have.text', validationMessages.termsAndCond);
         registrationPage.regErrorMsg.should('have.css', 'background-color', 'rgb(248, 215, 218)');
@@ -99,8 +110,19 @@ describe("POM Registration test", () =>{
 
     it("Register with short password less than 8 chars", () => {
 
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/auth/register'
+        }).as('register');
+
         header.registerBtn.click();
         registrationPage.registration(userData.randomName, userData.randomLastName, userData.randomEmail, userData.randomShortPassword, userData.randomShortPassword);
+
+        cy.wait('@register').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(422);
+        });
+
         registrationPage.regErrorMsg.should('be.visible');
         registrationPage.regErrorMsg.should('have.text', validationMessages.shortPass);
         registrationPage.regErrorMsg.should('have.css', 'background-color', 'rgb(248, 215, 218)');
@@ -111,8 +133,19 @@ describe("POM Registration test", () =>{
 
     it("Register with password not equal password confirm", () => {
 
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/auth/register'
+        }).as('register');
+
         header.registerBtn.click();
         registrationPage.registration(userData.randomName, userData.randomLastName, userData.randomEmail, userData.randomPassword, userData.randomNewPassword);
+
+        cy.wait('@register').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(422);
+        });
+
         registrationPage.regErrorMsg.should('be.visible');
         registrationPage.regErrorMsg.should('have.text', validationMessages.confMismatch);
         registrationPage.regErrorMsg.should('have.css', 'background-color', 'rgb(248, 215, 218)');
@@ -129,10 +162,20 @@ describe("POM Registration test", () =>{
         header.registerBtn.should('exist')
     });
 
-    it.only("Register with valid credentials", () => {
+    it("Register with valid credentials", () => {
+
+        cy.intercept({
+            method: 'POST',
+            url: 'https://gallery-api.vivifyideas.com/api/auth/register'
+        }).as('register');
 
         header.registerBtn.click();
         registrationPage.registration(userData.randomName, userData.randomLastName, userData.randomEmail, userData.randomPassword, userData.randomPassword);
+
+        cy.wait('@register').then((interception) => {
+            console.log(interception.response);
+            expect(interception.response.statusCode).eq(200);
+        });
         header.registerBtn.should('not.exist');
         header.logoutBtn.should('exist');
         cy.url().should('not.contains', "/register")

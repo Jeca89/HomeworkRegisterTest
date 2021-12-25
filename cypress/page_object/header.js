@@ -15,7 +15,7 @@ class Header {
         return cy.get("a[href='/create']")
     }
     get allGalleries() {
-        return cy.get("a[href='/']")
+        return cy.get("a[href='/']").eq(1);
     }
 }
 
